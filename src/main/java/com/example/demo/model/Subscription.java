@@ -18,6 +18,6 @@ public class Subscription {
     private Long cctvGroupId;
     private Long userId;
 
-    private boolean active;  // true = 구독중, false = 해제됨
+    private boolean active;  // true = 구독중, false = 해제됨 그리고 push 테스트임
 }
 
