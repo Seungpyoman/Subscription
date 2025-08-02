@@ -44,14 +44,12 @@ public class SubscriptionService {
         return subscriptionRepository.save(subscription);
     }
 
-    // 5. 삭제 (NPE 방지: cctvGroupId와 userId를 0으로 초기화)
+    // 5. 삭제 (DB에서 실제 레코드 삭제)
     public void deleteSubscription(Long id) {
-        Subscription subscription = subscriptionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Subscription not found"));
-
-        subscription.setCctvGroupId(0L);
-        subscription.setUserId(0L);
-        subscription.setActive(false);
-        subscriptionRepository.save(subscription);
+        if (!subscriptionRepository.existsById(id)) {
+            throw new IllegalArgumentException("Subscription not found");
+        }
+        subscriptionRepository.deleteById(id);
     }
+
 }
