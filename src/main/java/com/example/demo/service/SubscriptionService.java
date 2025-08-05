@@ -15,11 +15,11 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
 
     // 1. 등록
-    public Subscription createSubscription(Long cctvGroupId, Long userId) {
+    public Subscription createSubscription(Long cctvGroupId, Long userId, boolean active) {
         Subscription subscription = Subscription.builder()
                 .cctvGroupId(cctvGroupId)
                 .userId(userId)
-                .active(true)
+                .active(active) // 요청값 그대로 반영
                 .build();
         return subscriptionRepository.save(subscription);
     }
@@ -51,5 +51,4 @@ public class SubscriptionService {
         }
         subscriptionRepository.deleteById(id);
     }
-
 }

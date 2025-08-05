@@ -10,9 +10,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // 모든 API 경로 허용
-                .allowedOrigins("http://localhost:3000") // React 개발 서버
-                .allowedMethods("GET","POST","PUT","DELETE") // 필요한 메서드 허용
+                .allowedOriginPatterns("*") // 모든 Origin 허용 (RESTED 같은 브라우저 확장 포함)
+                .allowedMethods("GET","POST","PUT","DELETE","OPTIONS") // Preflight 요청 허용
                 .allowCredentials(true); // 인증정보(쿠키 등) 허용
     }
 }
+
 

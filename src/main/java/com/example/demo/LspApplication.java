@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class LspApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LspApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(LspApplication.class, args);
+    }
 
 }

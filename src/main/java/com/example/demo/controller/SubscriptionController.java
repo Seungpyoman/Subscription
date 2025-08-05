@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")  // ✅ React 개발 서버 허용
+
 @RestController
 @RequestMapping("/api/subscriptions")
 @RequiredArgsConstructor
@@ -15,29 +15,32 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
-
-    // 등록 (POST)
+    // 1. 등록 (POST)
     @PostMapping
     public Subscription create(@RequestBody Subscription subscription) {
+        // active 값 없으면 true로 기본 설정
+        boolean active = subscription.isActive();
         return subscriptionService.createSubscription(
                 subscription.getCctvGroupId(),
-                subscription.getUserId()
+                subscription.getUserId(),
+                active
         );
     }
 
-    // 전체 조회 (GET)
+    // 2. 전체 조회 (GET)
     @GetMapping
     public List<Subscription> getAll() {
         return subscriptionService.getAllSubscriptions();
     }
 
-    // 단일 조회 (GET)
+    // 3. 단일 조회 (GET)
     @GetMapping("/{id}")
     public Subscription getOne(@PathVariable Long id) {
         return subscriptionService.getSubscription(id)
                 .orElseThrow(() -> new RuntimeException("Subscription not found"));
     }
 
+    // 4. 수정 (PUT)
     @PutMapping("/{id}")
     public Subscription update(@PathVariable Long id,
                                @RequestBody Subscription updated) {
@@ -49,11 +52,10 @@ public class SubscriptionController {
         );
     }
 
-
-    // 삭제 (DELETE)
+    // 5. 삭제 (DELETE)
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         subscriptionService.deleteSubscription(id);
-        return "Subscription logically deleted (ID reset to 0)";
+        return "Subscription deleted (ID: " + id + ")";
     }
 }
