@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")  // ✅ React 개발 서버 허용
 @RestController
 @RequestMapping("/api/subscriptions")
 @RequiredArgsConstructor
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+
 
     // 등록 (POST)
     @PostMapping
@@ -36,14 +38,17 @@ public class SubscriptionController {
                 .orElseThrow(() -> new RuntimeException("Subscription not found"));
     }
 
-    // 수정 (PUT)
     @PutMapping("/{id}")
     public Subscription update(@PathVariable Long id,
-                               @RequestParam Long cctvGroupId,
-                               @RequestParam Long userId,
-                               @RequestParam boolean active) {
-        return subscriptionService.updateSubscription(id, cctvGroupId, userId, active);
+                               @RequestBody Subscription updated) {
+        return subscriptionService.updateSubscription(
+                id,
+                updated.getCctvGroupId(),
+                updated.getUserId(),
+                updated.isActive()
+        );
     }
+
 
     // 삭제 (DELETE)
     @DeleteMapping("/{id}")
