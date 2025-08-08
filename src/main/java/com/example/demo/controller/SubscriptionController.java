@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/subscriptions")
 @RequiredArgsConstructor
@@ -18,44 +17,36 @@ public class SubscriptionController {
     // 1. 등록 (POST)
     @PostMapping
     public Subscription create(@RequestBody Subscription subscription) {
-        // active 값 없으면 true로 기본 설정
-        boolean active = subscription.isActive();
-        return subscriptionService.createSubscription(
-                subscription.getCctvGroupId(),
-                subscription.getUserId(),
-                active
-        );
+        // active 기본값 처리
+        if (subscription.getActive() == null) {
+            subscription.setActive(true); // 기본값 true
+        }
+        return subscriptionService.create(subscription);
     }
 
     // 2. 전체 조회 (GET)
     @GetMapping
     public List<Subscription> getAll() {
-        return subscriptionService.getAllSubscriptions();
+        return subscriptionService.getAll();
     }
 
     // 3. 단일 조회 (GET)
     @GetMapping("/{id}")
     public Subscription getOne(@PathVariable Long id) {
-        return subscriptionService.getSubscription(id)
-                .orElseThrow(() -> new RuntimeException("Subscription not found"));
+        return subscriptionService.getById(id)
+                .orElseThrow(() -> new RuntimeException("Subscription not found (ID: " + id + ")"));
     }
 
     // 4. 수정 (PUT)
     @PutMapping("/{id}")
-    public Subscription update(@PathVariable Long id,
-                               @RequestBody Subscription updated) {
-        return subscriptionService.updateSubscription(
-                id,
-                updated.getCctvGroupId(),
-                updated.getUserId(),
-                updated.isActive()
-        );
+    public Subscription update(@PathVariable Long id, @RequestBody Subscription updated) {
+        return subscriptionService.update(id, updated);
     }
 
     // 5. 삭제 (DELETE)
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
-        subscriptionService.deleteSubscription(id);
+        subscriptionService.delete(id);
         return "Subscription deleted (ID: " + id + ")";
     }
 }

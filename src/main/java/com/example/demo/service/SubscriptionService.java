@@ -15,37 +15,40 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
 
     // 1. 등록
-    public Subscription createSubscription(Long cctvGroupId, Long userId, boolean active) {
-        Subscription subscription = Subscription.builder()
-                .cctvGroupId(cctvGroupId)
-                .userId(userId)
-                .active(active) // 요청값 그대로 반영
-                .build();
+    public Subscription create(Subscription subscription) {
+        // null 방지: active가 null이면 true로 설정
+        if (subscription.getActive() == null) {
+            subscription.setActive(true);
+        }
         return subscriptionRepository.save(subscription);
     }
 
     // 2. 전체 조회
-    public List<Subscription> getAllSubscriptions() {
+    public List<Subscription> getAll() {
         return subscriptionRepository.findAll();
     }
 
     // 3. 단일 조회
-    public Optional<Subscription> getSubscription(Long id) {
+    public Optional<Subscription> getById(Long id) {
         return subscriptionRepository.findById(id);
     }
 
     // 4. 수정
-    public Subscription updateSubscription(Long id, Long cctvGroupId, Long userId, boolean active) {
+    public Subscription update(Long id, Subscription updated) {
         Subscription subscription = subscriptionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Subscription not found"));
-        subscription.setCctvGroupId(cctvGroupId);
-        subscription.setUserId(userId);
-        subscription.setActive(active);
+
+        subscription.setName(updated.getName());
+        subscription.setDescription(updated.getDescription());
+        subscription.setCctvIds(updated.getCctvIds());
+        subscription.setManagerId(updated.getManagerId());
+        subscription.setActive(updated.getActive());
+
         return subscriptionRepository.save(subscription);
     }
 
-    // 5. 삭제 (DB에서 실제 레코드 삭제)
-    public void deleteSubscription(Long id) {
+    // 5. 삭제
+    public void delete(Long id) {
         if (!subscriptionRepository.existsById(id)) {
             throw new IllegalArgumentException("Subscription not found");
         }
